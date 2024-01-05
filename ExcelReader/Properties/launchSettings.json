@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "ExcelReader": {
+      "commandName": "Project",
+      "workingDirectory": "C:\\Folder\\C# Projects\\The C# Academy\\ExcelReader\\ExcelReader\\"
+    },
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    }
+  }
+}
