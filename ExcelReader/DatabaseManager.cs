@@ -5,7 +5,40 @@ namespace ExcelReader;
 
 internal class DatabaseManager
 {
-    public void CreateTable()
+    public void PopulateTable(List<People> people)
+    {
+        try
+        {
+            CreateTable();
+            Console.WriteLine("Inserting the data from the excel file into the database table..");
+
+            using var connection = new SqlConnection(GetConnectionString());
+
+            connection.Open();
+
+            foreach (var person in people)
+            {
+                string sqlCommandText = 
+                    $"use ExcelReader; " +
+                    $"INSERT INTO People VALUES" +
+                    $"({person.Id}, '" + person.FirstName + "', '" + person.LastName + "', '" + 
+                    person.Sex + "', '" + person.Email + "', '" + person.Phone + "', '" + person.BirthDate + "', '" + person.JobTitle + "')";
+
+                SqlCommand sqlCommand = new(sqlCommandText, connection);
+
+                sqlCommand.ExecuteNonQuery();
+            }
+
+            connection.Close();
+
+            Console.WriteLine("The data has been successfully inserted.");
+        } catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    void CreateTable()
     {
         try
         {
@@ -20,7 +53,7 @@ internal class DatabaseManager
                 @"
                     use ExcelReader;
                     CREATE TABLE People(
-                    PeopleId INT PRIMARY KEY IDENTITY(1,1),
+                    PeopleId INT PRIMARY KEY,
                     FirstName VARCHAR(64),
                     LastName VARCHAR(64),
                     Sex VARCHAR(6),
