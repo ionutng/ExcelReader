@@ -6,4 +6,4 @@ var info = await fileHelper.GetInfoFromFile(fileHelper.GetFile());
 
 var db = new DatabaseManager();
 
-db.PopulateTable(info);
+db.ShowData(info);

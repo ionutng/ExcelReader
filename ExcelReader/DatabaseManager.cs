@@ -1,10 +1,62 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Spectre.Console;
 
 namespace ExcelReader;
 
 internal class DatabaseManager
 {
+    public void ShowData(List<People> people)
+    {
+        try
+        {
+            PopulateTable(people);
+
+            using var connection = new SqlConnection(GetConnectionString());
+
+            connection.Open();
+
+            string sqlCommandText = "use ExcelReader; SELECT * FROM People";
+
+            SqlCommand sqlCommand = new(sqlCommandText, connection);
+
+            SqlDataReader reader = sqlCommand.ExecuteReader();
+
+            var table = new Table();
+            table.AddColumn("Id");
+            table.AddColumn("First Name");
+            table.AddColumn("Last Name");
+            table.AddColumn("Sex");
+            table.AddColumn("Email");
+            table.AddColumn("Phone");
+            table.AddColumn("Birth Date");
+            table.AddColumn("Job Title");
+
+            if (reader.HasRows)
+                while (reader.Read())
+                {
+                    table.AddRow(
+                        reader[0].ToString(),
+                        reader[1].ToString(),
+                        reader[2].ToString(),
+                        reader[3].ToString(),
+                        reader[4].ToString(),
+                        reader[5].ToString(),
+                        reader[6].ToString()[..9],
+                        reader[7].ToString()); 
+                }
+
+            AnsiConsole.Write(table);
+
+            Console.WriteLine("\nPress any key to quit.");
+            Console.ReadKey();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
     public void PopulateTable(List<People> people)
     {
         try
@@ -31,7 +83,7 @@ internal class DatabaseManager
 
             connection.Close();
 
-            Console.WriteLine("The data has been successfully inserted.");
+            Console.WriteLine("The data has been successfully inserted.\n");
         } catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
