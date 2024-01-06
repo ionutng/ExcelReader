@@ -1,22 +1,25 @@
 ﻿using OfficeOpenXml;
+using Spectre.Console;
 using System.Globalization;
 
 namespace ExcelReader;
 
 internal class FileHelper
 {
-    internal FileInfo GetFile()
+    internal static FileInfo GetFile()
     {
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-        var path = Path.GetDirectoryName(Environment.CurrentDirectory);
-        var filePath = Path.Combine(path, "People.xlsx");
+        var path = AnsiConsole.Ask<string>("Please input the path of the file:");
+        var fileName = AnsiConsole.Ask<string>("Please input the name of the file:");
+
+        var filePath = Path.Combine(path, fileName + ".xlsx");
         var file = new FileInfo(filePath);
 
         return file;
     }
 
-    internal async Task<List<People>> GetInfoFromFile(FileInfo file)
+    internal static async Task<List<People>> GetInfoFromFile(FileInfo file)
     {
         var people = new List<People>();
 

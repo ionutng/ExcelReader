@@ -1,8 +1,8 @@
 ﻿using ExcelReader;
 
-var fileHelper = new FileHelper();
+var file = FileHelper.GetFile();
 
-var info = await fileHelper.GetInfoFromFile(fileHelper.GetFile());
+var info = await FileHelper.GetInfoFromFile(file);
 
 var db = new DatabaseManager();
 
