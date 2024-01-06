@@ -48,8 +48,9 @@ internal class DatabaseManager
 
             AnsiConsole.Write(table);
 
-            Console.WriteLine("\nPress any key to quit.");
+            Console.WriteLine("\nPress any key to continue.");
             Console.ReadKey();
+            Console.Clear();
         }
         catch (Exception ex)
         {

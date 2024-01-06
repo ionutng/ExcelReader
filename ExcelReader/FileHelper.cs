@@ -54,4 +54,56 @@ internal class FileHelper
 
         return people;
     }
+
+    internal static async void AddDataToFile(FileInfo file)
+    {
+        if (AnsiConsole.Confirm("Would you like to add more data?"))
+        {
+            var people = GetPeople();
+
+            using var package = new ExcelPackage(file);
+
+            var ws = package.Workbook.Worksheets[0];
+
+            int rowNumber = 1;
+
+            while (!string.IsNullOrWhiteSpace(ws.Cells[$"A{rowNumber}"].Value?.ToString()))
+            {
+                rowNumber++;
+            }
+
+            var range = ws.Cells[$"A{rowNumber}"].LoadFromCollection(people, false);
+
+            range.AutoFitColumns();
+
+            await package.SaveAsync();
+
+            Console.WriteLine("\nThe data has been successfully added.");
+        }
+    }
+
+    internal static List<People> GetPeople()
+    {
+        var people = new List<People>();
+        bool addMorePeople;
+        do
+        {
+            var person = new People();
+
+            person.Id = AnsiConsole.Ask<int>("Person's id:");
+            person.FirstName = AnsiConsole.Ask<string>("Person's first name:");
+            person.LastName = AnsiConsole.Ask<string>("Person's last name:");
+            person.Sex = AnsiConsole.Ask<string>("Person's sex:");
+            person.Email = AnsiConsole.Ask<string>("Person's email:");
+            person.Phone = AnsiConsole.Ask<string>("Person's phone:");
+            person.BirthDate = AnsiConsole.Ask<DateOnly>("Person's birth date (MM-dd-yyyy):");
+            person.JobTitle = AnsiConsole.Ask<string>("Person's job title:");
+
+            people.Add(person);
+
+            addMorePeople = AnsiConsole.Confirm("Would you like to add more people?");
+        } while (addMorePeople);
+
+        return people;
+    }
 }
